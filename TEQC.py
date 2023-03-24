@@ -19,8 +19,8 @@ for filename in os.listdir(input_folder):
 
     # Construye las rutas completas a los archivos de entrada y salida
     input_file = os.path.join(input_folder, filename)
-    obs_output_file = os.path.join(output_folder, file_base + '.21o')
-    nav_output_file = os.path.join(output_folder, file_base + '.21n')
+    obs_output_file = os.path.join(output_folder, file_base + '.o')
+    nav_output_file = os.path.join(output_folder, file_base + '.n')
 
     # Construye el comando Teqc
     teqc_command = ['teqc', '+obs', obs_output_file, '+nav', nav_output_file, input_file]
