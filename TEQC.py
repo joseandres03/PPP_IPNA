@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 22 22:38:31 2023
 
-@author: Jose Andres Ramos Mendoza
+Author: José Andrés Ramos Mendoza
 """
 
 import os
