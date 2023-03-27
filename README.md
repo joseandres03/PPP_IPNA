@@ -6,4 +6,4 @@
 # >>Requisitos previos a la ejecución del programa:
 # 1) Descargar el ejecutable de TEQC https://www.unavco.org/software/data-processing/teqc/teqc.html según el tipo de sistema operativo.
 # 2) Crear una carpeta en donde *solamente* estan los archivos que quiere convertir.
-# 3) Crear otra carpeta vacía en donde se guardarán los archivos Rinex.
+# 3) Crear dos carpetas vacías en donde se guardarán los archivos Rinex, una para los datos de observación y otra para los de navegación.
