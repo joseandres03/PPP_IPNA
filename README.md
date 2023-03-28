@@ -1,9 +1,14 @@
 # IPNA-CSIC
-# Autores: José Andrés Ramos Mendoza y Luis Signorelli
+# Autores: José Andrés Ramos y Luis Signorelli
 
 # Este repositorio ha sido creado con el proposito de covertir archivos usando el ejecutable TEQC al formato rinex (2.11). Para ver cuales son los formatos aceptados por el ejecutable, visita la página web oficial de TEQC: https://www.unavco.org/software/data-processing/teqc/teqc.html#support.
 
-# >>Requisitos previos a la ejecución del programa:
-# 1) Descargar el ejecutable de TEQC https://www.unavco.org/software/data-processing/teqc/teqc.html según el tipo de sistema operativo.
-# 2) Crear una carpeta en donde *solamente* estan los archivos que quiere convertir.
-# 3) Crear dos carpetas vacías en donde se guardarán los archivos Rinex, una para los datos de observación y otra para los de navegación.
+# >>Requisitos previos a la ejecución del programa en Windows:
+# 1) Descargar el ejecutable de TEQC https://www.unavco.org/software/data-processing/teqc/teqc.html para Windows.
+# 2) Guardar el ejecutable dentro de la carpeta que contiene los archivos a convertir.
+# 3) Ejecutar el programa. Se crearán automáticamente dos carpetas que contendrán los archivos .o y .n respectivamente.
+
+# >>Requisitos para sistema MAC:
+# 1) Descargar el ejecutable de TEQC https://www.unavco.org/software/data-processing/teqc/teqc.html para MAC.
+# 2) Guardar el ejecutable dentro de la carpeta que contiene los archivos a convertir.
+# 3) Ejecutar el programa. Se crearán automáticamente dos carpetas que contendrán los archivos .o y .n respectivamente.
