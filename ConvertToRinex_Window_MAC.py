@@ -41,43 +41,43 @@ if sistema == 'Darwin':
     import shutil
 
     def convertToRinex():
-    filesDirectory = input("Escribe el directorio completo a la carpeta que solamente contiene los archivos a convertir a RINEX: ")
-    filesToConvert = os.listdir(filesDirectory)
-    rinexFilesFolder = os.path.join(filesDirectory, "rinexFiles")
+        filesDirectory = input("Escribe el directorio completo a la carpeta que solamente contiene los archivos a convertir a RINEX: ")
+        filesToConvert = os.listdir(filesDirectory)
+        rinexFilesFolder = os.path.join(filesDirectory, "rinexFiles")
     
-    # We create a folder in our directorh where the RINEX files will be saved
-    try:
-        os.makedirs(rinexFilesFolder)
-    except FileExistsError:
-        pass
-    # Inside the folder of RINEX files we create 2 folders for navegation files and observation files:
-    navFilesFolderDir = os.path.join(rinexFilesFolder, "navFiles")
-    obsFilesFolderDir = os.path.join(rinexFilesFolder, "obsFiles")
+        # We create a folder in our directorh where the RINEX files will be saved
+        try:
+            os.makedirs(rinexFilesFolder)
+        except FileExistsError:
+            pass
+        # Inside the folder of RINEX files we create 2 folders for navegation files and observation files:
+        navFilesFolderDir = os.path.join(rinexFilesFolder, "navFiles")
+        obsFilesFolderDir = os.path.join(rinexFilesFolder, "obsFiles")
 
-    try:
-        os.makedirs(navFilesFolderDir)
-    except FileExistsError:
-        pass
+        try:
+            os.makedirs(navFilesFolderDir)
+        except FileExistsError:
+            pass
 
-    try:
-        os.makedirs(obsFilesFolderDir)
-    except FileExistsError:
-        pass
+        try:
+            os.makedirs(obsFilesFolderDir)
+        except FileExistsError:
+            pass
 
-    # Process to convert our raw data to RINEX 2.11 files and save them in the corresponding folders:
-    for file in filesToConvert:
-        if file != "teqc" or file != "teqc.exe":
-            fileName = file.split(".")[0]
-            os.chdir(filesDirectory)
-            obsFile = fileName + ".o"
-            navFile = fileName + ".n"
-            teqc_command = ['teqc', '+obs', obsFile, '+nav', navFile, file]
-            subprocess.run(teqc_command)
-            obsFileDir = os.path.join(filesDirectory, obsFile)
-            obsFileNewDir = os.path.join(obsFilesFolderDir, obsFile)
-            navFileDir = os.path.join(filesDirectory, navFile)
-            navFileNewDir = os.path.join(navFilesFolderDir, navFile)
-            shutil.move(obsFileDir, obsFileNewDir)
-            shutil.move(navFileDir,navFileNewDir)
-        if file == "teqc" or file == "teqc.exe":
-            continue
+        # Process to convert our raw data to RINEX 2.11 files and save them in the corresponding folders:
+        for file in filesToConvert:
+            if file != "teqc" or file != "teqc.exe":
+                fileName = file.split(".")[0]
+                os.chdir(filesDirectory)
+                obsFile = fileName + ".o"
+                navFile = fileName + ".n"
+                teqc_command = ['teqc', '+obs', obsFile, '+nav', navFile, file]
+                subprocess.run(teqc_command)
+                obsFileDir = os.path.join(filesDirectory, obsFile)
+                obsFileNewDir = os.path.join(obsFilesFolderDir, obsFile)
+                navFileDir = os.path.join(filesDirectory, navFile)
+                navFileNewDir = os.path.join(navFilesFolderDir, navFile)
+                shutil.move(obsFileDir, obsFileNewDir)
+                shutil.move(navFileDir,navFileNewDir)
+            if file == "teqc" or file == "teqc.exe":
+                continue
