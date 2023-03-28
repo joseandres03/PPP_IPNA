@@ -40,12 +40,11 @@ if sistema == 'Darwin':
     from pathlib import Path
     import shutil
 
-    teqc = input('Introduce la ubicación del ejecutable: ')
-
-    filesDirectory = input("Escribe el directorio completo a la carpeta que\
-                           solamente contiene los archivos a convertir a RINEX (/Users/userName/directory): ")
+    def convertToRinex():
+    filesDirectory = input("Escribe el directorio completo a la carpeta que solamente contiene los archivos a convertir a RINEX: ")
     filesToConvert = os.listdir(filesDirectory)
     rinexFilesFolder = os.path.join(filesDirectory, "rinexFiles")
+    
     # We create a folder in our directorh where the RINEX files will be saved
     try:
         os.makedirs(rinexFilesFolder)
@@ -67,17 +66,18 @@ if sistema == 'Darwin':
 
     # Process to convert our raw data to RINEX 2.11 files and save them in the corresponding folders:
     for file in filesToConvert:
-        fileName = file.split(".")[0]
-        os.chdir(filesDirectory)
-        obsFile = fileName + ".o"
-        navFile = fileName + ".n"
-        teqc_command = [teqc, '+obs', obsFile, '+nav', navFile, file]
-        subprocess.run(teqc_command)
-        obsFileDir = os.path.join(filesDirectory, obsFile)
-        obsFileNewDir = os.path.join(obsFilesFolderDir, obsFile)
-        navFileDir = os.path.join(filesDirectory, navFile)
-        navFileNewDir = os.path.join(navFilesFolderDir, navFile)
-        shutil.move(obsFileDir, obsFileNewDir)
-        shutil.move(navFileDir,navFileNewDir)
-    
-    
+        if file != "teqc" or file != "teqc.exe":
+            fileName = file.split(".")[0]
+            os.chdir(filesDirectory)
+            obsFile = fileName + ".o"
+            navFile = fileName + ".n"
+            teqc_command = ['teqc', '+obs', obsFile, '+nav', navFile, file]
+            subprocess.run(teqc_command)
+            obsFileDir = os.path.join(filesDirectory, obsFile)
+            obsFileNewDir = os.path.join(obsFilesFolderDir, obsFile)
+            navFileDir = os.path.join(filesDirectory, navFile)
+            navFileNewDir = os.path.join(navFilesFolderDir, navFile)
+            shutil.move(obsFileDir, obsFileNewDir)
+            shutil.move(navFileDir,navFileNewDir)
+        if file == "teqc" or file == "teqc.exe":
+            continue
