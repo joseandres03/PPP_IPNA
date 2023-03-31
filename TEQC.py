@@ -2,11 +2,23 @@
 """
 Created on Wed Mar 22 22:38:31 2023
 
-@author: Jose 1
+@author: Jose Andre Ramos, Luis Signorelli
 """
 
 import os
+import platform
 import subprocess
+
+# Detecta el sistema operativo
+system = platform.system()
+
+# Establece el nombre del ejecutable teqc según el sistema operativo
+if system == 'Windows':
+    teqc_executable = 'teqc.exe'
+elif system == 'Darwin':
+    teqc_executable = 'teqc'
+else:
+    raise Exception('Sistema operativo no soportado')
 
 # Solicita al usuario la ubicación de la carpeta que contiene los archivos de entrada y el ejecutable teqc
 input_folder = input('Introduce la ubicación de la carpeta que contiene los archivos de entrada y el ejecutable teqc: ')
@@ -26,7 +38,7 @@ for filename in os.listdir(input_folder):
     file_base, file_ext = os.path.splitext(filename)
 
     # Ignora el ejecutable teqc
-    if file_base == 'teqc' and file_ext == '.exe':
+    if filename == teqc_executable:
         continue
 
     # Construye las rutas completas a los archivos de entrada y salida
@@ -35,7 +47,7 @@ for filename in os.listdir(input_folder):
     nav_output_file = os.path.join(nav_output_folder, file_base + '.n')
 
     # Construye el comando Teqc
-    teqc_command = ['teqc', '+obs', obs_output_file, '+nav', nav_output_file, input_file]
+    teqc_command = [os.path.join(input_folder, teqc_executable), '+obs', obs_output_file, '+nav', nav_output_file, input_file]
 
     # Ejecuta el comando Teqc
     subprocess.run(teqc_command)
