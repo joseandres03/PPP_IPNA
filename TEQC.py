@@ -2,7 +2,7 @@
 """
 Created on Wed Mar 22 22:38:31 2023
 
-@author: Jose Andre Ramos, Luis Signorelli
+@author: Jose Andres Ramos, Luis Signorelli
 """
 
 import os
