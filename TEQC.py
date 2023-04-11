@@ -14,9 +14,11 @@ system = platform.system()
 
 # Establece el nombre del ejecutable teqc según el sistema operativo
 if system == 'Windows':
-    teqc_executable = 'teqc.exe'
+    teqc_executable = 'teqc_WINDOWS.exe'
 elif system == 'Darwin':
-    teqc_executable = 'teqc'
+    teqc_executable = 'teqc_MAC'
+elif system == 'Linux':
+    teqc_executable = 'teqc_LINUX'
 else:
     raise Exception('Sistema operativo no soportado')
 
