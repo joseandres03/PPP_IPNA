@@ -10,8 +10,3 @@
 # >>Requisitos para sistema MAC:
 # 1) Guarda el ejecutable teqc_MAC dentro de la carpeta que contiene los archivos a convertir. **Esta carpeta SOLO debe contener el ejecutable teqc y los archivos a convertir.
 # 2) Ejecutar el programa TEQC.py en una consola de python. Se crearán automáticamente dos carpetas que contendrán los archivos .o y .n respectivamente dentro de la carpeta del paso 2.
-
-# >>Requisitos para sistema LINUX:
-# 1) Guarda el ejecutable teqc_LINUX dentro de la carpeta que contiene los archivos a convertir. **Esta carpeta SOLO debe contener el ejecutable teqc y los archivos a convertir.
-# 2) Ejecutar el programa TEQC.py en una consola de python. Se crearán automáticamente dos carpetas que contendrán los archivos .o y .n respectivamente dentro de la carpeta del paso 2.
- 
