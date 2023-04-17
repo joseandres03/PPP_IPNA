@@ -63,6 +63,32 @@ def get_date_from_rinex(file_path):
                 year, month, day, hour, minute, second = [int(x) if i != 5 else float(x) for i, x in enumerate(line.strip().split()[0:6])]
                 return datetime(year, month, day, hour, minute, int(second))
 
+def datetime_to_gps_week_day(dt):
+    # Fecha de referencia del GPS (1980-01-06 00:00:00)
+    gps_epoch = datetime(1980, 1, 6)
+    delta = dt - gps_epoch
+
+    # Calcular la semana y el día GPS
+    gps_week = delta.days // 7
+    gps_day = delta.days % 7
+
+    return gps_week, gps_day
+
+def download_sp3_file(gps_week, gps_day, output_folder):
+    url = f'https://cddis.nasa.gov/archive/gnss/products/{gps_week}/igs{gps_week}{gps_day}.sp3.Z'
+
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+
+    output_file = os.path.join(output_folder, f'igs{gps_week}{gps_day}.sp3.Z')
+
+    with open(output_file, 'wb') as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
+
+    return output_file
+
+
 if __name__ == "__main__":
     # Solicita al usuario la ubicación de la carpeta que contiene los archivos de entrada y el ejecutable teqc
     input_folder = input('Introduce la ubicación de la carpeta que contiene los archivos de entrada y el ejecutable teqc: ')
@@ -78,4 +104,13 @@ if __name__ == "__main__":
 
     # Leer la fecha de la primera observación
     date_observation = get_date_from_rinex(rinex_obs_file)
-    print(f"Fecha y hora de la primera observación: {date_observation}")
+    
+    gps_week, gps_day = datetime_to_gps_week_day(date_observation)
+    print(f"Semana GPS: {gps_week}, Día GPS: {gps_day}")
+
+    sp3_output_folder = os.path.join(input_folder, 'sp3_output')
+    if not os.path.exists(sp3_output_folder):
+        os.makedirs(sp3_output_folder)
+
+    sp3_file = download_sp3_file(gps_week, gps_day, sp3_output_folder)
+    print(f"Archivo sp3 descargado: {sp3_file}")
