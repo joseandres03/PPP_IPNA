@@ -1,0 +1,38 @@
+Loading Provider Job Queue                                       Tue Apr 18 11:13:19 UTC 2023
+
+No jobs waiting in side tracks, 0 jobs are quarantined, 19 are on hold
+Moving heavy jobs to side track for: 2537819558 fangchaooli 806300926 
+
+
+Queues Q-1 (fast track), Q-2 (at the gate),                                    P=penalty 
+ Q-1 is empty
+_______________________________________________________________________________________________
+ 
+Program is up and idle , recent activity at Apr 18 10:08:41 UTC 2023
+_______________________________________________________________________________________________
+ 
+ 
+THE LAST 10 JOBS:
+rperdiguer          	FES2004 	displacement    1  stations on Mon Apr 17 13:52:52 UTC
+hongck3186          	FES2004 	displacement   25  stations on Mon Apr 17 14:47:06 UTC
+jeremie.richard     	FES2004 	nanoms2         1  stations on Mon Apr 17 15:32:37 UTC
+vlupovka            	FES2004 	displacement   53  stations on Mon Apr 17 20:13:43 UTC
+vlupovka            	FES2004 	displacement   52  stations on Mon Apr 17 20:49:36 UTC
+hongck3186          	FES2004 	displacement   66  stations on Tue Apr 18 01:18:23 UTC
+kbg7588             	FES2004 	displacement    1  stations on Tue Apr 18 01:20:04 UTC
+hongck3186          	FES2004 	displacement   20  stations on Tue Apr 18 01:47:06 UTC
+kbg7588             	FES2004 	displacement    1  stations on Tue Apr 18 07:20:28 UTC
+jeremie.richard     	EOT20   	nanoms2         1  stations on Tue Apr 18 10:08:41 UTC
+ 
+tyshih                                        Done at Cloud Service on Mon Apr 17 02:20:50 UTC
+err1960                                       Done at Cloud Service on Mon Apr 17 09:54:42 UTC
+gabriel.oliveira                              Done at Cloud Service on Mon Apr 17 13:27:13 UTC
+mfloyd                                     Forward to Cloud Service on Mon Apr 17 22:20:32 UTC
+mfloyd                                        Done at Cloud Service on Tue Apr 18 00:08:52 UTC
+hanifahkun                                    Done at Cloud Service on Tue Apr 18 02:45:45 UTC
+hanifahkun                                    Done at Cloud Service on Tue Apr 18 03:53:16 UTC
+trongtdcc                                     Done at Cloud Service on Tue Apr 18 04:17:51 UTC
+819546229                                     Done at Cloud Service on Tue Apr 18 06:20:51 UTC
+819546229                                     Done at Cloud Service on Tue Apr 18 06:22:48 UTC
+
+.bye

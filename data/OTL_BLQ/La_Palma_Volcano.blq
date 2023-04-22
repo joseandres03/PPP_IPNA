@@ -1,0 +1,49 @@
+$$ Ocean loading displacement
+$$
+$$ OTL provider: http://holt.oso.chalmers.se/loading/
+$$ Created by Scherneck & Bos
+$$
+$$ WARNING: All your longitudes were within -90 to +90 degrees
+$$ There is a risk that longitude and latitude were swapped
+$$ Please verify for yourself that this has not been the case
+$$
+$$ COLUMN ORDER:  M2  S2  N2  K2  K1  O1  P1  Q1  MF  MM SSA
+$$
+$$ ROW ORDER:
+$$ AMPLITUDES (m)
+$$   RADIAL
+$$   TANGENTL    EW
+$$   TANGENTL    NS
+$$ PHASES (degrees)
+$$   RADIAL
+$$   TANGENTL    EW
+$$   TANGENTL    NS
+$$
+$$ Displacement is defined positive in upwards, South and West direction.
+$$ The phase lag is relative to Greenwich and lags positive. The STW105_disp
+$$ Green's function is used. The deficit of tidal water mass in the tide
+$$ model has been corrected by subtracting a uniform layer of water with
+$$ a certain phase lag globally.
+$$
+$$ CMC:  YES (corr.tide centre of mass)
+$$
+$$ A constant seawater density of 1030 kg/m^3 is used.
+$$
+$$ A thin tidal layer is subtracted to conserve water mass.
+$$
+$$ FES2014b: m2 s2 n2 k2 k1 o1
+$$ FES2014b: p1 q1 Mf Mm Ssa
+$$
+$$ END HEADER
+$$
+  La_Palma Volcano
+$$ FES2014b ID:2023-04-19 10:10:37
+$$ Computed using CARGA
+$$ La_Palma Volcano        RADI TANG  lon/lat: -17.8792   28.6186   620.000
+  .02492 .01039 .00514 .00291 .00356 .00356 .00103 .00101 .00088 .00032 .00011
+  .00165 .00084 .00025 .00030 .00274 .00158 .00081 .00029 .00028 .00009 .00005
+  .00371 .00148 .00076 .00046 .00494 .00324 .00155 .00050 .00046 .00031 .00030
+  -143.7 -122.2 -155.2 -126.1 -170.2  104.6  179.9   60.9  165.3  147.2  174.8
+  -110.7  -40.3 -144.0  -33.5   48.4   24.7   47.2    5.3  -42.9  -58.0 -158.3
+  -117.5  -80.7 -135.2  -83.9  -86.2 -102.2  -90.3 -110.8   27.4   14.1    1.3
+$$ END TABLE
