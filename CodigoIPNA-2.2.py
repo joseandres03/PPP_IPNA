@@ -10,11 +10,15 @@ import subprocess
 import os
 import platform
 from datetime import datetime
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib import ticker
 import glob
+
 
 # Archivos fijos para todas las medidas
 satpcv_file = "C:\IPNA\data\ANTEX\igs20.atx"
-blq_file = "C:\IPNA\data\OTL_BLQ\La_Palma_Volcano.blq"
+blq_folder = "C:\IPNA\data\OTL_BLQ"
 antex_folder = "C:\IPNA\data\ANTEX"
 rtkpost_exe = r"C:\IPNA\bin\rnx2rtkp.exe"
 rtkpost_conf = r"C:\IPNA\bin\rtkpost.conf"
@@ -38,24 +42,57 @@ elif system == 'Linux':
 else:
     raise Exception('Sistema operativo no soportado')
 
+# Seleccion del archivo .atx de su antena receptora. El archivo igs20.atx no cuenta dado que es el .atx para los satélites.
 def select_antex_file(antex_folder):
     antex_files = glob.glob(os.path.join(antex_folder, '*.atx'))
-    print("Seleccione el archivo ANTEX:")
-    for idx, file in enumerate(antex_files):
-        print(f"{idx + 1}: {os.path.basename(file)}")
+    filtered_antex_files = [file for file in antex_files if os.path.basename(file) != 'igs20.atx']
     
-    while True:
-        try:
-            user_input = int(input("Ingrese el número correspondiente al archivo ANTEX para su antena receptora: ")) - 1
-            if 0 <= user_input < len(antex_files):
-                return antex_files[user_input]
-            else:
-                print("Número inválido. Intente de nuevo.")
-        except ValueError:
-            print("Entrada inválida. Intente de nuevo.")
+    if len(filtered_antex_files) == 1:
+        print(f"Archivo ANTEX único encontrado: {os.path.basename(filtered_antex_files[0])}")
+        return filtered_antex_files[0]
+    else:
+        print("Seleccione el archivo ANTEX:")
+        for idx, file in enumerate(filtered_antex_files):
+            print(f"{idx + 1}: {os.path.basename(file)}")
+        
+        while True:
+            try:
+                user_input = int(input("Ingrese el número correspondiente al archivo ANTEX para su antena receptora: ")) - 1
+                if 0 <= user_input < len(filtered_antex_files):
+                    return filtered_antex_files[user_input]
+                else:
+                    print("Número inválido. Intente de nuevo.")
+            except ValueError:
+                print("Entrada inválida. Intente de nuevo.")
 
 # Solicitar al usuario que seleccione el archivo ANTEX de su antena receptora
 antex_file = select_antex_file(antex_folder)
+
+# Seleccion del archivo .blq.
+def select_otl_file(otl_folder):
+    otl_files = glob.glob(os.path.join(otl_folder, '*.blq'))
+    
+    if len(otl_files) == 1:
+        print(f"Archivo OTL único encontrado: {os.path.basename(otl_files[0])}")
+        return otl_files[0]
+    else:
+        print("Seleccione el archivo OTL:")
+        for idx, file in enumerate(otl_files):
+            print(f"{idx + 1}: {os.path.basename(file)}")
+        
+        while True:
+            try:
+                user_input = int(input("Ingrese el número correspondiente al archivo OTL para su antena receptora: ")) - 1
+                if 0 <= user_input < len(otl_files):
+                    return otl_files[user_input]
+                else:
+                    print("Número inválido. Intente de nuevo.")
+            except ValueError:
+                print("Entrada inválida. Intente de nuevo.")
+
+# Solicitar al usuario que seleccione el archivo .blq de la ubicacion de interes
+blq_file = select_otl_file(blq_folder)
+
 
 # Itera sobre todos los archivos en la carpeta de entrada
 for filename in os.listdir(input_folder):
@@ -268,29 +305,168 @@ for filename in os.listdir(input_folder):
     # Ejecucion de rtkpost
     run_rtkpost(rtkpost_exe, rtkpost_conf, observation_file, navigation_file, sp3_file, cls_file, output_file)
     
-    # Función rtkplot para representar el archivo .pos
-    def run_rtkplot(rtkplot_exe, pos_file):
-        cmd = [rtkplot_exe, pos_file]
-        subprocess.run(cmd)
-    
-    def ask_user_to_plot():
-        while True:
-            user_input = input("¿Desea ver gráficamente los resultados? (0: No, 1: Sí): ")
-            if user_input in ['0', '1']:
-                return int(user_input)
-            else:
-                print("Entrada no válida. Por favor, ingrese 0 o 1.")
 
-    # Llamada a la función para preguntar al usuario
-    plot_choice = ask_user_to_plot()
+    # Obtencion de un valor promedio para cada coordenada en ese día
+    def dms2dd(d, m, s):
+         return d + m / 60 + s / 3600
+    
+    def dd2dms(coord):
+        degrees = int(coord)
+        minutes = int((coord - degrees) * 60)
+        seconds = (coord - degrees - minutes / 60) * 3600
+        return degrees, minutes, seconds
+    
+    def velocidad(valores):
+        return [valores[i+1] - valores[i] for i in range(len(valores) - 1)]
 
-    if plot_choice == 1:
-        # Encuentro el archivo .pos a representar
-        pos_file = os.path.join('C:\IPNA\data', 'POST', f"{septentrio_filename_base}.pos")
-        run_rtkplot(rtkplot_exe, pos_file)
+    def promedio(valores):
+        return sum(valores) / len(valores)
+
+    def estabilizacion_modificada(valores, umbral_velocidad):
+        vels = velocidad(valores)
+        ultimo_indice_superado = None
+
+        for i, v in enumerate(vels):
+            if abs(v) > umbral_velocidad:
+                ultimo_indice_superado = i
+
+        if ultimo_indice_superado is not None:
+            valores_estables = valores[ultimo_indice_superado + 1 :]
+        else:
+            valores_estables = valores
+
+        return promedio(valores_estables)
     
+    # Grafica las coordenadas y el promedio
+    def plot_coords(fig, ax, tiempos, coords, ylabel, promedio, subplot_idx, formatter=None):
+        ax[subplot_idx].plot(tiempos, coords, marker='o', linestyle='-', linewidth=0.7, markersize=2)
+        ax[subplot_idx].axhline(promedio, color='r', linestyle='--', linewidth=0.7, label="Promedio")
+        ax[subplot_idx].set_xlabel('Tiempo')
+        ax[subplot_idx].set_ylabel(ylabel)
+        ax[subplot_idx].set_title(f'{ylabel} frente al tiempo')
+        ax[subplot_idx].grid()
+        ax[subplot_idx].xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
     
+        if formatter:
+            ax[subplot_idx].yaxis.set_major_formatter(formatter)
     
+        primer_tiempo = tiempos[0]
+        minutos = primer_tiempo.minute
+        if minutos < 30:
+            primer_tiempo = primer_tiempo.replace(minute=0, second=0, microsecond=0)
+        else:
+            primer_tiempo = primer_tiempo.replace(minute=30, second=0, microsecond=0)
     
+        ax[subplot_idx].set_xlim(primer_tiempo)
+        ax[subplot_idx].xaxis.set_major_locator(mdates.HourLocator())
+        ax[subplot_idx].xaxis.set_minor_locator(mdates.MinuteLocator(byminute=[30]))
+        ax[subplot_idx].xaxis.set_minor_formatter(mdates.DateFormatter('%H:%M'))
+        ax[subplot_idx].tick_params(axis='x', which='minor', bottom=True)
+        ax[subplot_idx].legend()
+
+    def coord_tick_formatter(x, pos):
+        d, m, s = dd2dms(x)
+        return f"{d:.0f}°{m:.0f}'{s:.2f}\""
+
+    def altitude_tick_formatter(x, pos):
+        return f'{x:.4f}'
+
+    coord_ticks = ticker.FuncFormatter(coord_tick_formatter)
+    altitude_ticks = ticker.FuncFormatter(altitude_tick_formatter)
+
+    position_file = os.path.join('C:\IPNA\data', 'POST', f"{septentrio_filename_base}.pos")
+    ruta_resultados = "C:\\IPNA\\data\\your_results"
+
+    umbral_angular = 4e-08
+    umbral_metrico = 0.015
+
+    with open(position_file, "r") as archivo_pos:
+        lines = archivo_pos.readlines()
+        
+        # Extraigo los datos latitudes, longitudes y alturas y los meto en listas
+        latitudes, longitudes, alturas = [], [], []
+        tiempos = []
+        
+        # Obtengo los valores de desviacion estandar y error de la ultima medida del día y la tomo como error y desviacion del día
+        sdn, sde, sdu, sdne, sdeu, sdue = 0, 0, 0, 0, 0, 0
+        for line in reversed(lines):
+            if line.strip() and not line.startswith('%'):
+                data = line.split()
+                if len(data) == 19:  # Hay 20 elementos en lugar de 18 debido a la estructura de latitud y longitud
+                    sdn, sde, sdu, sdne, sdeu, sdue = map(float, data[11:17])  # Cambiar aquí el índice inicial a 14 y final a 19
+                    break
+
+        for line in lines:
+            if line.strip() and not line.startswith('%'):
+                data = line.split()
+                fecha, hora, *coords = data
+                lat_d, lat_m, lat_s, lon_d, lon_m, lon_s, alt, *_ = map(float, coords)
+
+                lat = dms2dd(lat_d, lat_m, lat_s)
+                lon = dms2dd(lon_d, lon_m, lon_s)
+
+                latitudes.append(lat)
+                longitudes.append(lon)
+                alturas.append(alt)
+                tiempos.append(datetime.strptime(f'{fecha} {hora}', '%Y/%m/%d %H:%M:%S.%f'))
+
+        promedio_lat = estabilizacion_modificada(latitudes, umbral_angular)
+        promedio_lon = estabilizacion_modificada(longitudes, umbral_angular)
+        promedio_alt = estabilizacion_modificada(alturas, umbral_metrico)
+        promedio_lat_dms = dd2dms(promedio_lat)
+        promedio_lon_dms = dd2dms(promedio_lon)
+        
+        # Representación gráfica de las coordenadas y promedios
+        fig, ax = plt.subplots(3, 1, figsize=(8, 12), sharex=True)
     
+        plot_coords(fig, ax, tiempos, latitudes, 'N-S', promedio_lat, 0, coord_ticks)
+        plot_coords(fig, ax, tiempos, longitudes, 'E-W', promedio_lon, 1, coord_ticks)
+        plot_coords(fig, ax, tiempos, alturas, 'U-D [m]', promedio_alt, 2)
+    
+        # Ajuste de los ticks en el eje Y
+        ax[0].yaxis.set_major_formatter(coord_ticks)
+        ax[1].yaxis.set_major_formatter(coord_ticks)
+        ax[1].invert_yaxis()  # Invertir la escala vertical de longitudes
+        ax[2].yaxis.set_major_formatter(altitude_ticks)
+
+        plt.tight_layout()
+        plt.gcf().autofmt_xdate()
+        plt.savefig(os.path.join(ruta_resultados, "coordenadas_tiempo.png"))
+        plt.show()
+        plt.tight_layout()
+        
+        with open(os.path.join(ruta_resultados, "posiciones.txt"), "w") as archivo_resultados:
+            archivo_resultados.write("#  UTC            latitude            longitude            height(m)    sdn(m)   sde(m)   sdu(m)   sdne(m)  sdeu(m)  sdue(m)\n")
+            archivo_resultados.write(f"{fecha}        {promedio_lat_dms[0]:.0f}°{promedio_lat_dms[1]:.0f}'{promedio_lat_dms[2]:.5f}\"     {promedio_lon_dms[0]:.0f}°{promedio_lon_dms[1]:.0f}'{promedio_lon_dms[2]:.5f}\"    {promedio_alt:.4f}      {sdn:.4f}   {sde:.4f}   {sdu:.4f}   {sdne:.4f}  {sdeu:.4f}   {sdue:.4f}\n")
+
+    
+    # Gráfica en 3D
+    latitudes_deg, latitudes_min, latitudes_sec = zip(*[dd2dms(lat) for lat in latitudes])
+    longitudes_deg, longitudes_min, longitudes_sec = zip(*[dd2dms(lon) for lon in longitudes])
+
+    latitudes_dms = [(lat_d, lat_m, lat_s) for lat_d, lat_m, lat_s in zip(latitudes_deg, latitudes_min, latitudes_sec)]
+    longitudes_dms = [(lon_d, lon_m, lon_s) for lon_d, lon_m, lon_s in zip(longitudes_deg, longitudes_min, longitudes_sec)]
+
+    def plot_3d_path(latitudes, longitudes, alturas, promedio_lat, promedio_lon, promedio_alt):
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+    
+        latitudes_decimal = [dms2dd(*lat) for lat in latitudes]
+        longitudes_decimal = [dms2dd(*lon) for lon in longitudes]
+    
+        ax.plot(longitudes_decimal, latitudes_decimal, alturas, marker='o', linestyle='-', linewidth=0.7, markersize=2)
+
+        # Agregar el punto promedio al gráfico 3D
+        ax.scatter(promedio_lon, promedio_lat, promedio_alt, c='r', marker='o', s=100, label="Promedio")
+
+        ax.set_xlabel('Longitud [°]')
+        ax.set_ylabel('Latitud [°]')
+        ax.set_zlabel('Altura [m]')
+        ax.legend()  # Agregar la leyenda
+
+        plt.show()
+
+    # Llamar a la función con los valores promedio
+    plot_3d_path(latitudes_dms, longitudes_dms, alturas, promedio_lat, promedio_lon, promedio_alt)
+
     

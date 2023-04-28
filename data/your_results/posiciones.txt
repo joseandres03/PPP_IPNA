@@ -1,0 +1,2 @@
+#  UTC            latitude            longitude            height(m)    sdn(m)   sde(m)   sdu(m)   sdne(m)  sdeu(m)  sdue(m)
+2021/11/12        28°35'34.11518"     -16°-4'-58.39766"    73.4024      0.0036   0.0081   0.0193   0.0006  -0.0047   -0.0039
