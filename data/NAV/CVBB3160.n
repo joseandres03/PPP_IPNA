@@ -1,5 +1,5 @@
      2.11           N: GPS NAV DATA                         RINEX VERSION / TYPE
-teqc  2019Feb25                         20230428 10:03:33UTCPGM / RUN BY / DATE
+teqc  2019Feb25                         20230503 21:10:07UTCPGM / RUN BY / DATE
 Linux2.6.32-573.12.1.el6.x86_64|x86_64|gcc|Win64-MinGW64|=+ COMMENT
     1.6764D-08 -7.4506D-09 -1.1921D-07  1.1921D-07          ION ALPHA
     1.2083D+05 -1.1469D+05 -2.6214D+05  5.2429D+05          ION BETA
