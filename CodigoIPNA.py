@@ -429,21 +429,21 @@ for filename in os.listdir(input_folder):
         promedio_sdu = promedio(sdu[indice_estabilizacion_alt:])
 
         # Representación gráfica de las coordenadas y promedios en tres graficas distintas
-        #fig, ax = plt.subplots(3, 1, figsize=(8, 12), sharex=True)
-        #plot_coords(fig, ax, tiempos, latitudes, 'N-S', promedio_lat, 0, coord_ticks)
-        #plot_coords(fig, ax, tiempos, longitudes, 'E-W', promedio_lon, 1, coord_ticks)
-        #plot_coords(fig, ax, tiempos, alturas, 'U-D [m]', promedio_alt, 2)
+        fig, ax = plt.subplots(3, 1, figsize=(8, 12), sharex=True)
+        plot_coords(fig, ax, tiempos, latitudes, 'N-S', promedio_lat, 0, coord_ticks)
+        plot_coords(fig, ax, tiempos, longitudes, 'E-W', promedio_lon, 1, coord_ticks)
+        plot_coords(fig, ax, tiempos, alturas, 'U-D [m]', promedio_alt, 2)
     
         # Ajuste de los ticks en el eje Y
-        #ax[0].yaxis.set_major_formatter(coord_ticks)
-        #ax[1].yaxis.set_major_formatter(coord_ticks)
-        #ax[1].invert_yaxis()  # Invertir la escala vertical de longitudes
-        #ax[2].yaxis.set_major_formatter(altitude_ticks)
+        ax[0].yaxis.set_major_formatter(coord_ticks)
+        ax[1].yaxis.set_major_formatter(coord_ticks)
+        ax[1].invert_yaxis()  # Invertir la escala vertical de longitudes
+        ax[2].yaxis.set_major_formatter(altitude_ticks)
 
-        #plt.gcf().autofmt_xdate()
-        #plt.savefig(os.path.join(ruta_resultados, f"{septentrio_filename_base}.png"))
-        #plt.show()
-        #plt.tight_layout()
+        plt.gcf().autofmt_xdate()
+        plt.savefig(os.path.join(ruta_resultados, f"{septentrio_filename_base}.png"))
+        plt.show()
+        plt.tight_layout()
         
         # Cambio a coordendas en la zona UTM
         utm_x_best, utm_y_best = latlon_to_utm(lat_ult, lon_ult)
