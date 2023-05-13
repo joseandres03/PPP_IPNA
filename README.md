@@ -22,8 +22,8 @@ Por otro parte, el código está preparado para realizar de forma automática la
 - Descargar las librerias necesarias en su entorno Python/Conda (se recomienda usar un entorno independiente).
 - Regístrese en la web del CDDIS (https://urs.earthdata.nasa.gov/users/new?client_id=gDQnv1IO0j9O2xXdwS8KMQ&redirect_uri=https%3A%2F%2Fcddis.nasa.gov%2Fproxyauth&response_type=code&state=aHR0cDovL2NkZGlzLm5hc2EuZ292L2FyY2hpdmUvZ25zcy9wcm9kdWN0cy8)
 - Cree un archivo de texto en la carpeta \Usuarios\Usuario que contenga la siguiente:
-machine urs.earthdata.nasa.gov login <username> password <password>
- Sustituya <username> y <password> por sus credenciales de acceso a la web del CDDIS (Por ejemplo: machine urs.earthdata.nasa.gov login MIKE password Gnss00).
+machine urs.earthdata.nasa.gov login "username" password "password"
+ Sustituya "username" y "password" por sus credenciales de acceso a la web del CDDIS (Por ejemplo: machine urs.earthdata.nasa.gov login MIKE password Gnss00).
  Con este paso el código descargará automaticamente los archivos de correción necesarios.
 
 ## Instalación
